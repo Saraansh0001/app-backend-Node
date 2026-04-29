@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Habit = require('../models/Habit');
 
 exports.register = async (req, res) => {
     try {
@@ -24,6 +25,12 @@ exports.register = async (req, res) => {
         });
 
         const savedUser = await newUser.save();
+
+        await Habit.insertMany([
+            { userId: savedUser._id, title: "Morning Meditation", category: "Mindfulness", difficulty: "Easy", color: "#6B3FD4" },
+            { userId: savedUser._id, title: "Read 30 Minutes", category: "Productivity", difficulty: "Medium", color: "#38BDF8" },
+            { userId: savedUser._id, title: "Drink 2L Water", category: "Health", difficulty: "Easy", color: "#10B981" }
+        ]);
         
         const token = jwt.sign({ id: savedUser._id }, process.env.JWT_SECRET);
         

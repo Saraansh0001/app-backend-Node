@@ -63,16 +63,54 @@ exports.completeHabit = async (req, res) => {
         const habit = await Habit.findOne({ _id: req.params.id, userId: req.user.id });
         if (!habit) return res.status(404).json({ message: 'Habit not found' });
 
+        let updatedUser = await User.findById(req.user.id);
+
         if (!habit.completed) {
             habit.completed = true;
             habit.completedDate = new Date();
             await habit.save();
 
             // Add 10 XP to user
-            await User.findByIdAndUpdate(req.user.id, { $inc: { xp: 10 } });
+            updatedUser.xp += 10;
+
+            // Streak logic
+            const now = new Date();
+            const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+            
+            let startOfYesterday = new Date(startOfToday);
+            startOfYesterday.setUTCDate(startOfYesterday.getUTCDate() - 1);
+
+            let lastCompletedStart = null;
+            if (updatedUser.lastCompletedDate) {
+                const l = updatedUser.lastCompletedDate;
+                lastCompletedStart = new Date(Date.UTC(l.getUTCFullYear(), l.getUTCMonth(), l.getUTCDate()));
+            }
+
+            if (lastCompletedStart && lastCompletedStart.getTime() === startOfToday.getTime()) {
+                // Already completed a habit today, do nothing to streak
+            } else if (lastCompletedStart && lastCompletedStart.getTime() === startOfYesterday.getTime()) {
+                updatedUser.streak += 1;
+            } else {
+                updatedUser.streak = 1;
+            }
+
+            updatedUser.lastCompletedDate = now;
+            
+            if (updatedUser.streak > updatedUser.longestStreak) {
+                updatedUser.longestStreak = updatedUser.streak;
+            }
+
+            await updatedUser.save();
         }
 
-        res.json(habit);
+        res.json({
+            habit,
+            user: {
+                xp: updatedUser.xp,
+                streak: updatedUser.streak,
+                longestStreak: updatedUser.longestStreak
+            }
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

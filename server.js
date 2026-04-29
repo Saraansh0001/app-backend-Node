@@ -10,6 +10,7 @@ const challengesRoutes = require('./routes/challenges');
 const journalRoutes = require('./routes/journal');
 const leaderboardRoutes = require('./routes/leaderboard');
 const profileRoutes = require('./routes/profile');
+const statsRoutes = require('./routes/stats');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,12 +27,10 @@ app.use('/api/challenges', challengesRoutes);
 app.use('/api/journal', journalRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error:', err));
 
