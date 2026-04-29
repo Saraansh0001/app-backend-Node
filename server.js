@@ -29,10 +29,19 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/stats', statsRoutes);
 
-// Database connection
+// ==========================================
+// 🔌 DATABASE CONNECTION
+// ==========================================
+// This is where we connect to MongoDB. 
+// It uses the MONGO_URI from your .env file.
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log('MongoDB connection error:', err));
+.then(() => {
+    console.log('✅ MongoDB connected successfully');
+})
+.catch(err => {
+    console.log('❌ MongoDB connection error:', err);
+    console.log('👉 Tip: Check if your MongoDB URI in the .env file is correct!');
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
