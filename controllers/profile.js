@@ -14,11 +14,12 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, avatarUrl } = req.body;
+        const { name, avatarUrl, rank } = req.body;
         
         const updates = {};
         if (name !== undefined) updates.name = name;
         if (avatarUrl !== undefined) updates.avatarUrl = avatarUrl;
+        if (rank !== undefined) updates.rank = rank;
 
         const user = await User.findByIdAndUpdate(
             req.user.id,

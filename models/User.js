@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
     lastCompletedDate: { type: Date, default: null },
     longestStreak: { type: Number, default: 0 },
     avatarUrl: { type: String, default: "" },
+    rank: { type: String, default: "Warrior 🎖️" },
     createdAt: { type: Date, default: Date.now }
 });
 

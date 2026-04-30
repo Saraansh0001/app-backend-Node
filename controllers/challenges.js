@@ -25,3 +25,28 @@ exports.joinChallenge = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.createChallenge = async (req, res) => {
+    try {
+        const { title, duration, type, color } = req.body;
+        
+        if (!title || !duration || !type || !color) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const challenge = new Challenge({
+            title,
+            duration,
+            type,
+            color,
+            participants: 1,
+            progress: 0,
+            joinedUsers: [req.user.id] // Auto-join creator
+        });
+
+        const savedChallenge = await challenge.save();
+        res.status(201).json(savedChallenge);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
