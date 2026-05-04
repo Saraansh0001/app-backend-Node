@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema({
     longestStreak: { type: Number, default: 0 },
     avatarUrl: { type: String, default: "" },
     rank: { type: String, default: "Warrior 🎖️" },
+    settings: {
+        notificationsEnabled: { type: Boolean, default: true },
+        darkMode: { type: Boolean, default: false },
+        reminderTime: { type: String, default: "08:00 AM" }
+    },
     createdAt: { type: Date, default: Date.now }
 });
 

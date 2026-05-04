@@ -14,12 +14,18 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
-        const { name, avatarUrl, rank } = req.body;
+        const { name, avatarUrl, rank, settings } = req.body;
         
         const updates = {};
         if (name !== undefined) updates.name = name;
         if (avatarUrl !== undefined) updates.avatarUrl = avatarUrl;
         if (rank !== undefined) updates.rank = rank;
+        
+        if (settings) {
+            if (settings.notificationsEnabled !== undefined) updates['settings.notificationsEnabled'] = settings.notificationsEnabled;
+            if (settings.darkMode !== undefined) updates['settings.darkMode'] = settings.darkMode;
+            if (settings.reminderTime !== undefined) updates['settings.reminderTime'] = settings.reminderTime;
+        }
 
         const user = await User.findByIdAndUpdate(
             req.user.id,

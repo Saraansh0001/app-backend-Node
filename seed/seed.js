@@ -25,12 +25,12 @@ const seedDatabase = async () => {
         let usersInserted = 0;
         console.log('Seeding demo users...');
         const salt = await bcrypt.genSalt(10);
-        
+
         for (const userData of demoUsers) {
             const existingUser = await User.findOne({ email: userData.email });
             if (!existingUser) {
                 const hashedPassword = await bcrypt.hash(userData.password, salt);
-                
+
                 const newUser = new User({
                     name: userData.name,
                     email: userData.email,
@@ -39,12 +39,12 @@ const seedDatabase = async () => {
                     streak: userData.streak,
                     longestStreak: userData.longestStreak
                 });
-                
+
                 await newUser.save();
                 usersInserted++;
             }
         }
-        
+
         if (usersInserted > 0) {
             console.log(`Inserted ${usersInserted} demo users.`);
         } else {
